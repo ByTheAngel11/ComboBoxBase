@@ -1,4 +1,3 @@
-// src/main/java/org/example/comboboxbase/Controlador.java
 package org.example.comboboxbase;
 
 import javafx.event.ActionEvent;

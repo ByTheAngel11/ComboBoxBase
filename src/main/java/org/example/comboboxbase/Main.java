@@ -1,4 +1,3 @@
-// src/main/java/org/example/comboboxbase/Main.java
 package org.example.comboboxbase;
 
 import javafx.application.Application;
