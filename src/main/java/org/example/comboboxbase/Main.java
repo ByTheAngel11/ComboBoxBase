@@ -15,9 +15,11 @@ public class Main extends Application {
     private ComboBox<String> comboBox;
     private ColorPicker colorPicker;
     private DatePicker datePicker;
+    private DatePicker fechaInicialPicker, fechaFinalPicker;
     private Text eventLog;
     private Rectangle colorDisplay;
     private Label comboBoxLabel, dateLabel, resumenLabel;
+    private Label fechaInicialLabel, fechaFinalLabel;
     private Button guardarBtn, limpiarBtn;
     private ListView<String> historialListView;
 
@@ -48,6 +50,15 @@ public class Main extends Application {
         datePicker.setPrefWidth(200);
         dateLabel = new Label("Seleccionado: ");
 
+        // Nuevos campos para fecha inicial y final
+        fechaInicialPicker = new DatePicker();
+        fechaInicialPicker.setPrefWidth(200);
+        fechaInicialLabel = new Label("Seleccionado: ");
+
+        fechaFinalPicker = new DatePicker();
+        fechaFinalPicker.setPrefWidth(200);
+        fechaFinalLabel = new Label("Seleccionado: ");
+
         guardarBtn = new Button("Guardar");
         limpiarBtn = new Button("Limpiar");
         resumenLabel = new Label("Resumen: ");
@@ -58,7 +69,6 @@ public class Main extends Application {
         grid.add(comboBox, 1, 0);
         grid.add(comboBoxLabel, 2, 0);
 
-        // El campo ColorPicker es didáctico y puede representar una preferencia visual o un color identificador para la cita.
         grid.add(new Label("Color identificador:"), 0, 1);
         grid.add(colorPicker, 1, 1);
         grid.add(colorDisplay, 2, 1);
@@ -67,11 +77,20 @@ public class Main extends Application {
         grid.add(datePicker, 1, 2);
         grid.add(dateLabel, 2, 2);
 
-        grid.add(guardarBtn, 1, 3);
-        grid.add(limpiarBtn, 1, 4);
-        grid.add(resumenLabel, 2, 3);
-        grid.add(new Label("Historial:"), 0, 5);
-        grid.add(historialListView, 1, 5, 2, 1);
+        // Agrega las nuevas filas para fecha inicial y final
+        grid.add(new Label("Fecha inicial:"), 0, 3);
+        grid.add(fechaInicialPicker, 1, 3);
+        grid.add(fechaInicialLabel, 2, 3);
+
+        grid.add(new Label("Fecha final:"), 0, 4);
+        grid.add(fechaFinalPicker, 1, 4);
+        grid.add(fechaFinalLabel, 2, 4);
+
+        grid.add(guardarBtn, 1, 5);
+        grid.add(limpiarBtn, 1, 6);
+        grid.add(resumenLabel, 2, 5);
+        grid.add(new Label("Historial:"), 0, 7);
+        grid.add(historialListView, 1, 7, 2, 1);
 
         eventLog = new Text();
         eventLog.setStyle("-fx-font-family: monospace; -fx-font-size: 12px;");
@@ -83,26 +102,73 @@ public class Main extends Application {
 
         new Controlador(this);
 
-        Scene scene = new Scene(root, 650, 480);
+        Scene scene = new Scene(root, 650, 600);
         stage.setTitle("Formulario de Cita");
         stage.setScene(scene);
         stage.show();
     }
 
-    public ComboBox<String> getComboBox() { return comboBox; }
-    public ColorPicker getColorPicker() { return colorPicker; }
-    public DatePicker getDatePicker() { return datePicker; }
-    public Text getEventLog() { return eventLog; }
-    public Rectangle getColorDisplay() { return colorDisplay; }
-    public Label getComboBoxLabel() { return comboBoxLabel; }
-    public Label getDateLabel() { return dateLabel; }
-    public Button getGuardarBtn() { return guardarBtn; }
-    public Button getLimpiarBtn() { return limpiarBtn; }
-    public ListView<String> getHistorialListView() { return historialListView; }
-    public Label getResumenLabel() { return resumenLabel; }
+    public ComboBox<String> getComboBox() {
+        return comboBox;
+    }
+
+    public ColorPicker getColorPicker() {
+        return colorPicker;
+    }
+
+    public DatePicker getDatePicker() {
+        return datePicker;
+    }
+
+    public DatePicker getFechaInicialPicker() {
+        return fechaInicialPicker;
+    }
+
+    public DatePicker getFechaFinalPicker() {
+        return fechaFinalPicker;
+    }
+
+    public Text getEventLog() {
+        return eventLog;
+    }
+
+    public Rectangle getColorDisplay() {
+        return colorDisplay;
+    }
+
+    public Label getComboBoxLabel() {
+        return comboBoxLabel;
+    }
+
+    public Label getDateLabel() {
+        return dateLabel;
+    }
+
+    public Label getFechaInicialLabel() {
+        return fechaInicialLabel;
+    }
+
+    public Label getFechaFinalLabel() {
+        return fechaFinalLabel;
+    }
+
+    public Button getGuardarBtn() {
+        return guardarBtn;
+    }
+
+    public Button getLimpiarBtn() {
+        return limpiarBtn;
+    }
+
+    public ListView<String> getHistorialListView() {
+        return historialListView;
+    }
+
+    public Label getResumenLabel() {
+        return resumenLabel;
+    }
 
     public static void main(String[] args) {
         launch(args);
     }
 }
-

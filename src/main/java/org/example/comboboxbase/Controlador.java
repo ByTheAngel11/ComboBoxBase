@@ -7,6 +7,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.paint.Color;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import javafx.scene.control.Control;
 
 public class Controlador implements EventHandler<ActionEvent>, ChangeListener<Boolean> {
@@ -41,6 +42,20 @@ public class Controlador implements EventHandler<ActionEvent>, ChangeListener<Bo
             limpiarEstiloCampo(vista.getDatePicker());
         });
 
+        vista.getFechaInicialPicker().setOnAction(this);
+        vista.getFechaInicialPicker().showingProperty().addListener(this);
+        vista.getFechaInicialPicker().valueProperty().addListener((obs, oldVal, newVal) -> {
+            actualizarEstadoGuardar();
+            limpiarEstiloCampo(vista.getFechaInicialPicker());
+        });
+
+        vista.getFechaFinalPicker().setOnAction(this);
+        vista.getFechaFinalPicker().showingProperty().addListener(this);
+        vista.getFechaFinalPicker().valueProperty().addListener((obs, oldVal, newVal) -> {
+            actualizarEstadoGuardar();
+            limpiarEstiloCampo(vista.getFechaFinalPicker());
+        });
+
         vista.getGuardarBtn().setOnAction(e -> guardarDatos());
         vista.getLimpiarBtn().setOnAction(e -> limpiarCampos());
     }
@@ -62,6 +77,18 @@ public class Controlador implements EventHandler<ActionEvent>, ChangeListener<Bo
                 vista.getDateLabel().setText("Seleccionado: " + fecha.format(formato));
                 registrarEvento("Fecha seleccionada: " + fecha.format(formato));
             }
+        } else if (source == vista.getFechaInicialPicker()) {
+            LocalDate fecha = vista.getFechaInicialPicker().getValue();
+            if (fecha != null) {
+                vista.getFechaInicialLabel().setText("Seleccionado: " + fecha.format(formato));
+                registrarEvento("Fecha inicial seleccionada: " + fecha.format(formato));
+            }
+        } else if (source == vista.getFechaFinalPicker()) {
+            LocalDate fecha = vista.getFechaFinalPicker().getValue();
+            if (fecha != null) {
+                vista.getFechaFinalLabel().setText("Seleccionado: " + fecha.format(formato));
+                registrarEvento("Fecha final seleccionada: " + fecha.format(formato));
+            }
         }
     }
 
@@ -73,6 +100,10 @@ public class Controlador implements EventHandler<ActionEvent>, ChangeListener<Bo
             registrarEvento("ColorPicker diálogo " + (newVal ? "abierto" : "cerrado"));
         } else if (obs == vista.getDatePicker().showingProperty()) {
             registrarEvento("DatePicker calendario " + (newVal ? "abierto" : "cerrado"));
+        } else if (obs == vista.getFechaInicialPicker().showingProperty()) {
+            registrarEvento("Fecha inicial calendario " + (newVal ? "abierto" : "cerrado"));
+        } else if (obs == vista.getFechaFinalPicker().showingProperty()) {
+            registrarEvento("Fecha final calendario " + (newVal ? "abierto" : "cerrado"));
         }
     }
 
@@ -80,7 +111,10 @@ public class Controlador implements EventHandler<ActionEvent>, ChangeListener<Bo
         String categoria = vista.getComboBox().getValue();
         Color color = vista.getColorPicker().getValue();
         LocalDate fecha = vista.getDatePicker().getValue();
+        LocalDate fechaInicial = vista.getFechaInicialPicker().getValue();
+        LocalDate fechaFinal = vista.getFechaFinalPicker().getValue();
         boolean completo = true;
+
         if (categoria == null) {
             resaltarCampo(vista.getComboBox());
             completo = false;
@@ -93,13 +127,37 @@ public class Controlador implements EventHandler<ActionEvent>, ChangeListener<Bo
             resaltarCampo(vista.getDatePicker());
             completo = false;
         }
+        if (fechaInicial == null) {
+            resaltarCampo(vista.getFechaInicialPicker());
+            completo = false;
+        }
+        if (fechaFinal == null) {
+            resaltarCampo(vista.getFechaFinalPicker());
+            completo = false;
+        }
+
         if (!completo) {
             vista.getResumenLabel().setText("Resumen: ¡Completa todos los campos!");
             registrarEvento("Intento de guardar con campos incompletos.");
             return;
         }
-        String resumen = String.format("Resumen: %s, %s, %s",
-                categoria, color.toString(), fecha.format(formato));
+
+        if (fechaFinal.isBefore(fechaInicial)) {
+            vista.getResumenLabel().setText("Resumen: La fecha final debe ser posterior a la inicial.");
+            registrarEvento("Error: Fecha final anterior a la inicial.");
+            resaltarCampo(vista.getFechaFinalPicker());
+            return;
+        }
+
+        long dias = ChronoUnit.DAYS.between(fechaInicial, fechaFinal);
+        String resumen = String.format("Resumen: %s, %s, %s, %d días entre %s y %s",
+                categoria,
+                color.toString(),
+                fecha.format(formato),
+                dias,
+                fechaInicial.format(formato),
+                fechaFinal.format(formato)
+        );
         vista.getResumenLabel().setText(resumen);
         vista.getHistorialListView().getItems().add(resumen);
         registrarEvento("Datos guardados: " + resumen);
@@ -111,13 +169,19 @@ public class Controlador implements EventHandler<ActionEvent>, ChangeListener<Bo
         vista.getComboBox().setValue(null);
         vista.getColorPicker().setValue(null);
         vista.getDatePicker().setValue(null);
+        vista.getFechaInicialPicker().setValue(null);
+        vista.getFechaFinalPicker().setValue(null);
         vista.getComboBoxLabel().setText("Seleccionado: ");
         vista.getDateLabel().setText("Seleccionado: ");
+        vista.getFechaInicialLabel().setText("Seleccionado: ");
+        vista.getFechaFinalLabel().setText("Seleccionado: ");
         vista.getColorDisplay().setFill(Color.WHITE);
         vista.getResumenLabel().setText("Resumen: ");
         limpiarEstiloCampo(vista.getComboBox());
         limpiarEstiloCampo(vista.getColorPicker());
         limpiarEstiloCampo(vista.getDatePicker());
+        limpiarEstiloCampo(vista.getFechaInicialPicker());
+        limpiarEstiloCampo(vista.getFechaFinalPicker());
         actualizarEstadoGuardar();
         registrarEvento("Campos limpiados.");
     }
@@ -133,7 +197,9 @@ public class Controlador implements EventHandler<ActionEvent>, ChangeListener<Bo
     private void actualizarEstadoGuardar() {
         boolean habilitar = vista.getComboBox().getValue() != null &&
                 vista.getColorPicker().getValue() != null &&
-                vista.getDatePicker().getValue() != null;
+                vista.getDatePicker().getValue() != null &&
+                vista.getFechaInicialPicker().getValue() != null &&
+                vista.getFechaFinalPicker().getValue() != null;
         vista.getGuardarBtn().setDisable(!habilitar);
     }
 
@@ -145,4 +211,3 @@ public class Controlador implements EventHandler<ActionEvent>, ChangeListener<Bo
         vista.getEventLog().setText(vista.getEventLog().getText() + "\n" + mensaje);
     }
 }
-
