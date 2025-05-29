@@ -23,41 +23,67 @@ public class Controlador implements EventHandler<ActionEvent>, ChangeListener<Bo
     private void configurarEventos() {
         vista.getComboBox().setOnAction(this);
         vista.getComboBox().showingProperty().addListener(this);
-        vista.getComboBox().valueProperty().addListener((obs, oldVal, newVal) -> {
-            actualizarEstadoGuardar();
-            limpiarEstiloCampo(vista.getComboBox());
+        vista.getComboBox().valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> obs, String oldVal, String newVal) {
+                actualizarEstadoGuardar();
+                limpiarEstiloCampo(vista.getComboBox());
+            }
         });
 
         vista.getColorPicker().setOnAction(this);
         vista.getColorPicker().showingProperty().addListener(this);
-        vista.getColorPicker().valueProperty().addListener((obs, oldVal, newVal) -> {
-            actualizarEstadoGuardar();
-            limpiarEstiloCampo(vista.getColorPicker());
+        vista.getColorPicker().valueProperty().addListener(new ChangeListener<Color>() {
+            @Override
+            public void changed(ObservableValue<? extends Color> obs, Color oldVal, Color newVal) {
+                actualizarEstadoGuardar();
+                limpiarEstiloCampo(vista.getColorPicker());
+            }
         });
 
         vista.getDatePicker().setOnAction(this);
         vista.getDatePicker().showingProperty().addListener(this);
-        vista.getDatePicker().valueProperty().addListener((obs, oldVal, newVal) -> {
-            actualizarEstadoGuardar();
-            limpiarEstiloCampo(vista.getDatePicker());
+        vista.getDatePicker().valueProperty().addListener(new ChangeListener<LocalDate>() {
+            @Override
+            public void changed(ObservableValue<? extends LocalDate> obs, LocalDate oldVal, LocalDate newVal) {
+                actualizarEstadoGuardar();
+                limpiarEstiloCampo(vista.getDatePicker());
+            }
         });
 
         vista.getFechaInicialPicker().setOnAction(this);
         vista.getFechaInicialPicker().showingProperty().addListener(this);
-        vista.getFechaInicialPicker().valueProperty().addListener((obs, oldVal, newVal) -> {
-            actualizarEstadoGuardar();
-            limpiarEstiloCampo(vista.getFechaInicialPicker());
+        vista.getFechaInicialPicker().valueProperty().addListener(new ChangeListener<LocalDate>() {
+            @Override
+            public void changed(ObservableValue<? extends LocalDate> obs, LocalDate oldVal, LocalDate newVal) {
+                actualizarEstadoGuardar();
+                limpiarEstiloCampo(vista.getFechaInicialPicker());
+            }
         });
 
         vista.getFechaFinalPicker().setOnAction(this);
         vista.getFechaFinalPicker().showingProperty().addListener(this);
-        vista.getFechaFinalPicker().valueProperty().addListener((obs, oldVal, newVal) -> {
-            actualizarEstadoGuardar();
-            limpiarEstiloCampo(vista.getFechaFinalPicker());
+        vista.getFechaFinalPicker().valueProperty().addListener(new ChangeListener<LocalDate>() {
+            @Override
+            public void changed(ObservableValue<? extends LocalDate> obs, LocalDate oldVal, LocalDate newVal) {
+                actualizarEstadoGuardar();
+                limpiarEstiloCampo(vista.getFechaFinalPicker());
+            }
         });
 
-        vista.getGuardarBtn().setOnAction(e -> guardarDatos());
-        vista.getLimpiarBtn().setOnAction(e -> limpiarCampos());
+        vista.getGuardarBtn().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                guardarDatos();
+            }
+        });
+
+        vista.getLimpiarBtn().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                limpiarCampos();
+            }
+        });
     }
 
     @Override
