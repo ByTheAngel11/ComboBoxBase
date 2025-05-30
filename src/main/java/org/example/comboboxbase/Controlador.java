@@ -30,7 +30,7 @@ public class Controlador implements EventHandler<ActionEvent>, ChangeListener<Bo
                 limpiarEstiloCampo(vista.getComboBox());
             }
         });
-
+//Poner en la tablita
         vista.getColorPicker().setOnAction(this);
         vista.getColorPicker().showingProperty().addListener(this);
         vista.getColorPicker().valueProperty().addListener(new ChangeListener<Color>() {
@@ -42,7 +42,7 @@ public class Controlador implements EventHandler<ActionEvent>, ChangeListener<Bo
         });
 
         vista.getDatePicker().setOnAction(this);
-        vista.getDatePicker().showingProperty().addListener(this);
+        vista.getDatePicker().showingProperty().addListener(this);//Iria en la segunda columna ligar el escuchador
         vista.getDatePicker().valueProperty().addListener(new ChangeListener<LocalDate>() {
             @Override
             public void changed(ObservableValue<? extends LocalDate> obs, LocalDate oldVal, LocalDate newVal) {
